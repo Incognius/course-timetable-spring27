@@ -125,7 +125,8 @@
     var syl = A.SYLLABI[code] || A.SYLLABI[code.replace(/[ab]$/, "")] || null;
     var schedule = c.sections.map(function (s) {
       return (s.label ? "Sec " + s.label + ": " : "") + A.meetingsText(s.meetings);
-    }).join("<br>") || esc(c.note || "No scheduled slot on the lecture grid");
+    }).join("<br>") ||
+      esc(D.meta.scheduleMissing || c.note || "No scheduled slot on the lecture grid");
     var reqBy = A.requiredBy(code);
     var cats = c.categories.map(A.categoryLabel).join(", ");
 
@@ -154,7 +155,8 @@
         html += sylSection("Syllabus (as published)", syl.raw);
       }
     } else {
-      html += '<h3>Syllabus</h3><div class="missing">Not included in Courses-Syllabus_M26-V1.</div>';
+      html += '<h3>Syllabus</h3><div class="missing">' +
+        esc(D.meta.syllabusMissing || "Not included in Courses-Syllabus_M26-V1.") + "</div>";
     }
 
     modal.innerHTML = html;

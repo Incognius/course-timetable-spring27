@@ -118,6 +118,25 @@ nav.tabs a.active {
   color: #fff;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.25);
 }
+/* semester switch: quieter than the page tabs */
+nav.sem-switch {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+nav.sem-switch a {
+  text-decoration: none;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--surface);
+}
+nav.sem-switch a + a { border-left: 1px solid var(--border); }
+nav.sem-switch a:hover { color: var(--text); }
+nav.sem-switch a.active { background: var(--accent-soft); color: var(--accent); }
+
 .theme-btn {
   border: 1px solid var(--border);
   background: var(--surface);
@@ -467,3 +486,25 @@ td.cell.clash { outline: 2px solid var(--clash); outline-offset: -2px; }
   .tt-side { border-left: none; border-top: 1px solid var(--border); }
   .detail-card .dc-cols { grid-template-columns: 1fr; }
 }
+
+/* ---------- timetable placeholder (semester with no published grid) ---------- */
+.tt-pending {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+.tt-pending .card {
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  background: var(--surface);
+  border: 1px dashed var(--border-strong);
+  border-radius: 12px;
+  padding: 2.4rem 1.6rem;
+  box-shadow: var(--shadow);
+}
+.tt-pending h2 { margin: 0 0 0.6rem; font-size: 1.25rem; }
+.tt-pending p { margin: 0 0 1.2rem; color: var(--text-dim); font-size: 0.9rem; }
+.tt-pending .btn { display: inline-block; text-decoration: none; padding: 0.45rem 1rem; font-size: 0.85rem; }

@@ -14,6 +14,32 @@ Semester I)** and building a clash-free personal timetable.
 
 Everything is client-side vanilla JS — no build step, no backend.
 
+## Spring 2027
+
+A Spring 2027 (2026-27 Semester II) version lives in `spring27/`. Use the
+**Monsoon 2026 / Spring 2027** switch in the header to move between them.
+
+- **Courses** (`spring27/index.html`) — every course from
+  `CourseOfferings-S27-V1.pdf` (24 Nov 2026), with the same filters and
+  details view, plus Spring-only lists (UG2 breadth buckets, UG2 ECE 2-credit
+  foundation streams, Ethics 2 electives, Bouquet CPS). Four courses listed
+  as "New" have no code yet and show as `NEW-1`…`NEW-4`.
+- **Timetable** (`spring27/timetable.html`) — placeholder: *"Will Be Updated
+  Once document is available"*. The Spring lecture timetable and syllabus
+  haven't been published, so no course has a slot or syllabus yet.
+
+Data: `js/data-s27.js`, checked by `node scripts/validate-s27.js`. That check
+confirms every course code in the PDF is in the data and that each
+programme's cores plus elective slots add up to the document's total. One known
+doc mismatch, UG4 CHD (adds to 16 but printed as 18), is a warning, not an
+error.
+
+When the Spring timetable arrives: add `meet:` / `sec:` slots in
+`js/data-s27.js` (same format as `js/data.js`), then replace
+`spring27/timetable.html` with a copy of `timetable.html` that loads
+`../js/data-s27.js`. `js/timetable.js` and `js/ics.js` also hard-code Monsoon
+assumptions (the ICS date range and the syllabus file), so check those too.
+
 ## Running locally
 
 Any static file server works. For example:
@@ -35,6 +61,7 @@ All data is derived from the three official PDFs (kept in the repo root):
 | `CourseOfferings-M26-V5.pdf` | courses, credits, faculty, programme cores |
 | `Consolidated Lecture Time Table_M26.pdf` | weekly slot for each course |
 | `Courses-Syllabus_M26-V1.pdf` | verbatim syllabus text |
+| `CourseOfferings-S27-V1.pdf` | Spring 2027 courses, credits, faculty, programme cores |
 
 Generated / curated files:
 

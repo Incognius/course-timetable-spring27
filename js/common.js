@@ -21,7 +21,8 @@
     CE: "Civil / Structural Engineering",
     GS: "Geospatial Sciences",
     PD: "Product Design & Management",
-    OC: "Institute-wide (Arts / Sports / Value Ed)"
+    OC: "Institute-wide (Arts / Sports / Value Ed)",
+    OE: "Open Elective (no area code yet)"
   };
 
   function esc(s) {

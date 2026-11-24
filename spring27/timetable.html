@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timetable — Spring 2027</title>
+<script>(function(){var t=localStorage.getItem("m26-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="tt-page">
+
+<header class="site">
+  <h1>IIIT-H Spring 2027</h1>
+  <nav class="sem-switch" aria-label="Semester">
+    <a href="../timetable.html">Monsoon 2026</a>
+    <a href="timetable.html" class="active" aria-current="page">Spring 2027</a>
+  </nav>
+  <span class="meta" id="meta-line"></span>
+  <nav class="tabs">
+    <a href="index.html">Courses</a>
+    <a href="timetable.html" class="active">Timetable</a>
+  </nav>
+  <button class="theme-btn" id="theme-toggle" type="button">Dark mode</button>
+</header>
+
+<!-- The Spring 2027 lecture timetable has not been published. Once it is,
+     add the slots to js/data-s27.js and replace this page with the builder
+     (copy ../timetable.html, pointing it at ../js/data-s27.js). -->
+<main class="tt-pending">
+  <div class="card">
+    <h2>Will Be Updated Once document is available</h2>
+    <p>The Spring 2027 lecture timetable hasn't been published yet. The course list is already up.</p>
+    <a class="btn primary" href="index.html">Browse Spring 2027 courses</a>
+  </div>
+</main>
+
+<script src="../js/data-s27.js"></script>
+<script src="../js/common.js"></script>
+<script>
+  (function () {
+    var D = window.APP.D;
+    document.getElementById("meta-line").textContent =
+      D.meta.semester + " · Offerings " + D.meta.offeringsVersion;
+    window.APP.initThemeToggle(document.getElementById("theme-toggle"));
+  })();
+</script>
+</body>
+</html>

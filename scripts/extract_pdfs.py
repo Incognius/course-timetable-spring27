@@ -1,7 +1,7 @@
-"""Deterministic PDF extraction for the M26 elective planner.
+"""Deterministic PDF extraction for the M26 / S27 course planner.
 
-Dumps raw text (and the timetable's table structure) from the three official
-PDFs into data/raw/. Run this whenever a new version of any PDF is dropped in
+Dumps raw text (and the timetable's table structure) from the official PDFs
+into data/raw/. Run this whenever a new version of any PDF is dropped in
 the project root, then diff data/raw/ against git to see what changed.
 
 Usage: python scripts/extract_pdfs.py
@@ -50,9 +50,12 @@ def dump_timetable(pdf_path, out_name):
 
 def main():
     os.makedirs(RAW, exist_ok=True)
-    dump_text(find_pdf("CourseOfferings*.pdf"), "offerings.txt")
+    dump_text(find_pdf("CourseOfferings-M26*.pdf"), "offerings.txt")
     dump_text(find_pdf("Courses-Syllabus*.pdf"), "syllabus.txt")
     dump_timetable(find_pdf("Consolidated Lecture Time Table*.pdf"), "timetable.txt")
+    # Spring 2027: only the offerings document is out so far. Add the S27
+    # timetable / syllabus here once they are published.
+    dump_text(find_pdf("CourseOfferings-S27*.pdf"), "offerings-s27.txt")
 
 
 if __name__ == "__main__":
