@@ -1,4 +1,11 @@
-"""Segment data/raw/syllabus.txt into per-course syllabus records -> js/syllabi.js.
+"""Segment a syllabus PDF extract into per-course syllabus records.
+
+  python scripts/build_syllabi.py          # M26: data/raw/syllabus.txt -> js/syllabi.js
+  python scripts/build_syllabi.py s26      # S26: data/raw/syllabus-s26.txt -> js/syllabi-s26.js
+
+The S26 (Spring 2026) output is used as stand-in course details for the
+Spring 2027 courses that were also offered in Spring 2026; it also keeps each
+record's faculty so the site can flag professor changes.
 
 The syllabus PDF uses two template variants:
   A (numbered):  1.Prerequisite Course / Knowledge:  2.Course Outcomes (COs)
@@ -19,12 +26,12 @@ The doc's block headers themselves contain typos that must all split blocks:
   "Title of the Course Name : X"   (Embedded Systems Workshop)
   "Title of the Course Robotics:.."(colon missing — EC4.401)
 
-Usage: python scripts/build_syllabi.py
 """
 
 import json
 import os
 import re
+import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -68,6 +75,40 @@ TITLE_TO_CODE = {
     "systems thinking": "EC5.202",
 }
 
+# Same idea for the Spring 2026 syllabus doc (blocks without a usable code).
+# (Most of these have the code under a lowercase "Course code" label, which
+# the header parser doesn't read.)
+TITLE_TO_CODE_S26 = {
+    "arts 1 and 2": "OC2.102",
+    "basics of ethics": "HS0.203",
+    "behavioral research: statistical methods": "CG3.403",
+    "introduction to human sciences": "HS8.102",
+    "introduction to linguistics 2:": "CL1.102",
+    "mechatronics system design": "EC4.404",
+    "the mathematics of information: theory and application": "EC5.207",
+    "thinking and knowing in the human sciences – i": "HS0.201",
+}
+
+# S26 blocks with no faculty line: taken from the S26 doc's own index table.
+FACULTY_FALLBACK_S26 = {
+    "CE1.601": "Sunitha P",
+    "CG5.405": "Priyanka Srivastava + Shrikant Bharadwaj, LVPEI",
+    "CS5.401": "Raman Saxena",
+    "CS9.311": "Bapi Raju S",
+    "SC1.101": "Diganta Das",
+    "SC1.420": "Subhadip Mitra",
+}
+
+DOCS = {
+    "m26": {"raw": "syllabus.txt", "out": "syllabi.js", "titles": TITLE_TO_CODE,
+            "fields": ["title", "prerequisites", "outcomes", "topics",
+                       "references", "teaching", "assessment", "raw"]},
+    "s26": {"raw": "syllabus-s26.txt", "out": "syllabi-s26.js", "titles": TITLE_TO_CODE_S26,
+            "fields": ["title", "faculty", "prerequisites", "outcomes", "topics",
+                       "references", "teaching", "assessment", "raw"],
+            "faculty_fallback": FACULTY_FALLBACK_S26},
+}
+
 CODE_RE = re.compile(r"[A-Z]{2}\d\.\d{3}[a-z]?")
 
 # The syllabus doc occasionally uses a different code than the offerings doc
@@ -97,13 +138,17 @@ SECTIONS = [
 ]
 
 # Matches every observed "Title of the Course" header variant (see docstring).
+# \b stops "Objectives of the course:" (S26, CS3.404) from splitting a block.
+# S26 also uses "Course Title :" (HS4.303) and "Name of the Course :" (CS6.504).
 TITLE_SPLIT = re.compile(
-    r"(?=[Tt]i\w{0,3}\s+of\s+the\s+[Cc]ourse(?:\s+[Nn]ame)?\s*:"
-    r"|Title\s+of\s+the\s+Course\s+[A-Z])")
+    r"(?=\b[Tt]i\w{0,3}\s+of\s+the\s+[Cc]ourse(?:\s+[Nn]ame)?\s*:"
+    r"|Title\s+of\s+the\s+Course\s+[A-Z]"
+    r"|^Course\s+Title\s*:|^Name\s+of\s+the\s+Course\s*:)", re.M)
 
 # Header fields at the top of each block (before the first section marker).
 HEADER_FIELDS = [
-    ("title", re.compile(r"^\s*[Tt]i\w{0,3}\s+of\s+the\s+[Cc]ourse(?:\s+[Nn]ame)?\s*:?\s*(.*)")),
+    ("title", re.compile(r"^\s*(?:[Tt]i\w{0,3}\s+of\s+the\s+[Cc]ourse(?:\s+[Nn]ame)?|Course\s+Title"
+                         r"|Name\s+of\s+the\s+Course)\s*:?\s*(.*)")),
     ("faculty", re.compile(r"^\s*(?:Name\s*of\s*the\s*Faculty|Faculty\s*Name)\s*\(?s?\)?\s*:?\s*(.*)", re.I)),
     ("code", re.compile(r"^\s*Course\s*Code\s*:?\s*(.*)")),
     ("program", re.compile(r"^\s*Name\s*of\s*the\s*(?:Program|Academic\s*Program)\s*m?e?\s*:?\s*(.*)", re.I)),
@@ -178,7 +223,7 @@ def parse_block(block):
     return rec
 
 
-def resolve_code(rec):
+def resolve_code(rec, titles):
     raw = rec.get("code") or ""
     m = CODE_RE.search(raw)
     if m:
@@ -186,11 +231,12 @@ def resolve_code(rec):
         return CODE_REMAP.get(m.group(0), m.group(0))
     title_key = re.sub(r"\s*\((?:H1|H2|H|H1&H2)\)\s*", "", (rec.get("title") or "")).strip().lower()
     title_key = re.sub(r"\s+", " ", title_key)
-    return TITLE_TO_CODE.get(title_key)
+    return titles.get(title_key)
 
 
 def main():
-    raw = open(os.path.join(ROOT, "data", "raw", "syllabus.txt"), encoding="utf-8").read()
+    doc = DOCS[sys.argv[1] if len(sys.argv) > 1 else "m26"]
+    raw = open(os.path.join(ROOT, "data", "raw", doc["raw"]), encoding="utf-8").read()
     txt = clean_text(re.sub(r"\n===== PAGE \d+ =====\n", "\n", raw))
     blocks = TITLE_SPLIT.split(txt)[1:]
     print(f"blocks found: {len(blocks)}")
@@ -198,15 +244,15 @@ def main():
     out, unresolved, dupes = {}, [], []
     for block in blocks:
         rec = parse_block(block)
-        code = resolve_code(rec)
+        code = resolve_code(rec, doc["titles"])
         if not code:
             unresolved.append(rec["title"])
             continue
         if code in out:
             dupes.append(code)
-        out[code] = {k: rec[k] for k in
-                     ["title", "prerequisites", "outcomes", "topics",
-                      "references", "teaching", "assessment", "raw"]}
+        if not rec.get("faculty"):
+            rec["faculty"] = doc.get("faculty_fallback", {}).get(code)
+        out[code] = {k: rec[k] for k in doc["fields"]}
 
     empty_sections = {c: [k for k in ("outcomes", "topics") if not r[k]]
                       for c, r in out.items()}
@@ -226,11 +272,11 @@ def main():
 
     js = "// GENERATED by scripts/build_syllabi.py from Courses-Syllabus PDF. Do not edit by hand.\n"
     js += "window.SYLLABI = " + json.dumps(out, ensure_ascii=False, indent=1) + ";\n"
-    out_path = os.path.join(ROOT, "js", "syllabi.js")
+    out_path = os.path.join(ROOT, "js", doc["out"])
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(js)
-    print(f"wrote js/syllabi.js ({os.path.getsize(out_path)} bytes)")
+    print(f"wrote js/{doc['out']} ({os.path.getsize(out_path)} bytes)")
 
 
 if __name__ == "__main__":

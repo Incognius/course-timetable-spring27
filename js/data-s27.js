@@ -1,7 +1,9 @@
 // Course data for Spring 2027 (2026-27 Semester II), curated from:
 //   CourseOfferings-S27-V1.pdf (24 Nov 2026)
-// The Spring lecture timetable and syllabus documents are not published yet,
-// so no course has meeting slots: every course has an empty `sections` list.
+// The Spring 2027 lecture timetable and syllabus documents are not published
+// yet, so no course has meeting slots: every course has an empty `sections`
+// list. Course details come from the Spring 2026 syllabus (js/syllabi-s26.js)
+// for courses offered in both semesters, matched by course code.
 // When the timetable arrives, add meet:"Mon1 Thu1" / sec:{...} exactly as in
 // js/data.js (same period definitions), then build out spring27/timetable.html.
 // half: "H1" | "H2" | "H" (full-sem, one class a week) | null (regular full-sem).
@@ -527,10 +529,13 @@
       semester: "Spring 2027 (2026-27 Semester II)",
       offeringsVersion: "V1 (24 November 2026)",
       timetableVersion: null,
-      syllabusVersion: null,
+      syllabusVersion: "Spring 2026 syllabus V1 (04 Dec 2025), used as a stand-in",
       // Shown in the course details while there is no timetable / syllabus.
       scheduleMissing: "Will Be Updated Once document is available",
-      syllabusMissing: "The Spring 2027 syllabus document has not been published yet."
+      syllabusMissing: "Will be updated once Syllabus doc is released.",
+      // Course details come from the Spring 2026 syllabus (js/syllabi-s26.js).
+      syllabusSource: "Spring 2026",
+      syllabusNote: "Details about the Course are based on 26 Spring Syllabus and might not be completely accurate for 27 Spring"
     },
     periods: PERIODS,
     courses: COURSES,

@@ -15,6 +15,9 @@
   --clash: #c62828;
   --clash-soft: #fdecea;
   --ok: #1b7a3d;
+  --warn: #8a5300;
+  --warn-soft: #fff4dc;
+  --warn-border: #f0c36d;
   --shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 1px 3px rgba(16, 24, 40, 0.06);
   --shadow-lg: 0 8px 28px rgba(16, 24, 40, 0.16);
   --radius: 8px;
@@ -35,6 +38,9 @@
     --clash: #ef5350;
     --clash-soft: #3a1f1f;
     --ok: #66bb6a;
+    --warn: #f3c066;
+    --warn-soft: #33270f;
+    --warn-border: #6b5220;
     --shadow: none;
     --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.5);
   }
@@ -52,6 +58,9 @@
   --clash: #ef5350;
   --clash-soft: #3a1f1f;
   --ok: #66bb6a;
+  --warn: #f3c066;
+  --warn-soft: #33270f;
+  --warn-border: #6b5220;
   --shadow: none;
   --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.5);
 }
@@ -258,6 +267,35 @@ nav.tabs a.active {
 }
 .syl { white-space: pre-wrap; font-size: 0.85rem; }
 .missing { color: var(--text-dim); font-style: italic; font-size: 0.86rem; }
+
+/* stand-in syllabus notes + professor-change highlight */
+.page-note {
+  margin: 0.9rem 1.4rem 0;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--warn-border);
+  background: var(--warn-soft);
+  color: var(--warn);
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+}
+.syl-note {
+  margin: 1rem 0 0;
+  padding: 0.45rem 0.7rem;
+  border-left: 3px solid var(--warn-border);
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-size: 0.8rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.fac-change {
+  margin-top: 0.35rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--warn-border);
+  background: var(--warn-soft);
+  color: var(--warn);
+  border-radius: var(--radius);
+  font-size: 0.82rem;
+}
 
 /* ---------- timetable page: fixed-height 3-column app layout ---------- */
 .tt-layout {

@@ -51,11 +51,14 @@ def dump_timetable(pdf_path, out_name):
 def main():
     os.makedirs(RAW, exist_ok=True)
     dump_text(find_pdf("CourseOfferings-M26*.pdf"), "offerings.txt")
-    dump_text(find_pdf("Courses-Syllabus*.pdf"), "syllabus.txt")
+    dump_text(find_pdf("Courses-Syllabus_M26*.pdf"), "syllabus.txt")
     dump_timetable(find_pdf("Consolidated Lecture Time Table*.pdf"), "timetable.txt")
     # Spring 2027: only the offerings document is out so far. Add the S27
     # timetable / syllabus here once they are published.
     dump_text(find_pdf("CourseOfferings-S27*.pdf"), "offerings-s27.txt")
+    # Spring 2026 syllabus: stand-in course details for Spring 2027 courses
+    # that were also offered in Spring 2026.
+    dump_text(find_pdf("Courses-Syllabus_S26*.pdf"), "syllabus-s26.txt")
 
 
 if __name__ == "__main__":

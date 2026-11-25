@@ -10,6 +10,10 @@
   document.getElementById("meta-line").textContent =
     D.meta.semester + " · Offerings " + D.meta.offeringsVersion;
   A.initThemeToggle($("theme-toggle"));
+  if (D.meta.syllabusNote && $("page-note")) {
+    $("page-note").textContent = D.meta.syllabusNote;
+    $("page-note").hidden = false;
+  }
 
   // Honours / BTP / Thesis / Seminars are registrations, not courses — the
   // dashboard hides them (the timetable's requirements still know about them).
@@ -128,6 +132,13 @@
     }).join("<br>") ||
       esc(D.meta.scheduleMissing || c.note || "No scheduled slot on the lecture grid");
     var reqBy = A.requiredBy(code);
+    // Professor change since the semester the syllabus was taken from.
+    var fc = syl && syl.faculty ? A.facultyChange(c.faculty, syl.faculty) : null;
+    var src = D.meta.syllabusSource || "the syllabus";
+    var facHtml = esc(c.faculty.join(", ") || "—") + (fc
+      ? '<div class="fac-change"><strong>Faculty changed since ' + esc(src) + ".</strong> " +
+        esc(src) + ": " + esc(fc.before) + "</div>"
+      : "");
     var cats = c.categories.map(A.categoryLabel).join(", ");
 
     var html =
@@ -136,7 +147,7 @@
       '<div class="sub">' + esc(c.code) + " · " + esc(c.ltpc) +
         (c.half ? " · " + esc(c.half) : "") + "</div>" +
       '<dl class="facts">' +
-      "<dt>Faculty</dt><dd>" + esc(c.faculty.join(", ") || "—") + "</dd>" +
+      "<dt>Faculty</dt><dd>" + facHtml + "</dd>" +
       "<dt>Schedule</dt><dd>" + schedule + "</dd>" +
       (cats ? "<dt>Counts as</dt><dd>" + esc(cats) + "</dd>" : "") +
       (c.cap ? "<dt>Seat cap</dt><dd>" + c.cap + "</dd>" : "") +
@@ -145,6 +156,7 @@
       "</dl>";
 
     if (syl) {
+      if (D.meta.syllabusNote) html += '<div class="syl-note">' + esc(D.meta.syllabusNote) + "</div>";
       html += sylSection("Prerequisites", syl.prerequisites);
       html += sylSection("Course outcomes", syl.outcomes);
       html += sylSection("Detailed syllabus", syl.topics);

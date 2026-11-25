@@ -104,6 +104,71 @@
     }).map(function (pid) { return D.programmes[pid].label; });
   }
 
+  // ---- faculty change between a course and an older syllabus record ----
+  // Names in the docs are spelled inconsistently ("Gowtham Kurii", "S. BAPI
+  // RAJU", "R C Prasad" vs "Ramachandra Prasad"), so people are matched
+  // loosely. Returns {before, added, removed} or null when nothing changed
+  // or the old record has no usable faculty.
+  var NOT_A_PERSON = /^(tbd|ips|lvpei|guest faculty|guest speakers?|director.*|hsrc.*)$/;
+
+  function people(str) {
+    return String(str || "")
+      .replace(/\([^)]*\)/g, " ")
+      .split(/\s*(?:\+|,|&|\band\b)\s*/i)
+      .map(function (p) {
+        return p.toLowerCase().replace(/\b(dr|prof|mr|ms|mrs)\b\.?/g, " ")
+          .replace(/\./g, " ").replace(/[^a-z ]/g, "").replace(/\s+/g, " ").trim();
+      })
+      .filter(function (p) { return p && !NOT_A_PERSON.test(p); })
+      .map(function (p) {
+        var toks = p.split(" ");
+        return { toks: toks, words: toks.filter(function (t) { return t.length > 1; }) };
+      })
+      .filter(function (p) { return p.words.length; });
+  }
+
+  // Similarity of two words: 1 - edit distance / longer length.
+  function close(a, b) {
+    if (a === b) return true;
+    if (Math.abs(a.length - b.length) > 2) return false;
+    var prev = [], cur, i, j;
+    for (j = 0; j <= b.length; j++) prev[j] = j;
+    for (i = 1; i <= a.length; i++) {
+      cur = [i];
+      for (j = 1; j <= b.length; j++)
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = cur;
+    }
+    return 1 - prev[b.length] / Math.max(a.length, b.length) >= 0.75;
+  }
+
+  function samePerson(x, y) {
+    if (close(x.words.join(""), y.words.join(""))) return true;
+    var xs = x.words.slice().sort().join(" "), ys = y.words.slice().sort().join(" ");
+    if (xs === ys) return true;
+    var xw = x.words, yw = y.words;
+    // Same first name; surnames agree, or one side abbreviates/omits it.
+    if (close(xw[0], yw[0])) {
+      if (xw.length === 1 || yw.length === 1) return true;
+      return xw.slice(1).some(function (a) {
+        return yw.slice(1).some(function (b) { return close(a, b); });
+      });
+    }
+    // Same surname and the same first initial ("R C Prasad" / "Ramachandra Prasad").
+    return close(xw[xw.length - 1], yw[yw.length - 1]) && x.toks[0][0] === y.toks[0][0];
+  }
+
+  function facultyChange(courseFaculty, oldFaculty) {
+    var now = people(courseFaculty.join(" + ")), then = people(oldFaculty);
+    if (!then.length || !now.length) return null;
+    function missingFrom(list) {
+      return function (p) { return !list.some(function (q) { return samePerson(p, q); }); };
+    }
+    var addedIdx = now.map(missingFrom(then)), removedIdx = then.map(missingFrom(now));
+    if (addedIdx.indexOf(true) === -1 && removedIdx.indexOf(true) === -1) return null;
+    return { before: oldFaculty };
+  }
+
   window.APP = {
     D: D,
     SYLLABI: window.SYLLABI || {},
@@ -117,6 +182,7 @@
     halvesOverlap: halvesOverlap,
     categoryLabel: categoryLabel,
     courseInAnyCategory: courseInAnyCategory,
-    requiredBy: requiredBy
+    requiredBy: requiredBy,
+    facultyChange: facultyChange
   };
 })();

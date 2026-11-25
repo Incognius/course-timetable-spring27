@@ -8,15 +8,27 @@ Semester II)**.
   cap), with Spring-only lists (UG2 breadth buckets, UG2 ECE 2-credit
   foundation streams, Ethics 2 electives, Bouquet CPS). Four courses listed as
   "New" have no code yet and show as `NEW-1`…`NEW-4`.
+- **Course details** — the Spring 2027 syllabus isn't out, so for the 114
+  courses also offered in Spring 2026 (matched by course code) the details
+  show the **Spring 2026 syllabus** (`Courses-Syllabus_S26-V1.pdf` →
+  `js/syllabi-s26.js`), under a note that it may not be fully accurate for
+  Spring 2027. If the professor changed since Spring 2026, the details
+  highlight it and show who taught it then. The other 31 courses say *"Will be
+  updated once Syllabus doc is released."*
 - **Timetable** (`timetable.html`) — placeholder: *"Will Be Updated Once
-  document is available"*. The Spring lecture timetable and syllabus haven't
-  been published, so no course has a slot or syllabus yet.
+  document is available"*. The Spring lecture timetable hasn't been
+  published, so no course has a slot yet.
 
 Everything is client-side vanilla JS — no build step, no backend.
 
-Data: `js/data-s27.js`, checked by `node scripts/validate-s27.js`. That check
-confirms every course code in the PDF is in the data and that each
-programme's cores plus elective slots add up to the document's total. One known
+Data: `js/data-s27.js` and `js/syllabi-s26.js` (regenerate the latter with
+`python scripts/build_syllabi.py s26`), checked by
+`node scripts/validate-s27.js`. That check confirms every course code in the
+PDF is in the data, that each programme's cores plus elective slots add up to
+the document's total, and that each S26 syllabus matched by code has a
+matching title; it also lists every faculty change it detects. Faculty names
+are matched loosely (`facultyChange` in `js/common.js`) because the docs spell
+them inconsistently. One known
 doc mismatch, UG4 CHD (adds to 16 but printed as 18), is a warning, not an
 error.
 
@@ -56,6 +68,7 @@ All data is derived from the three official PDFs (kept in the repo root):
 | `Consolidated Lecture Time Table_M26.pdf` | weekly slot for each course |
 | `Courses-Syllabus_M26-V1.pdf` | verbatim syllabus text |
 | `CourseOfferings-S27-V1.pdf` | Spring 2027 courses, credits, faculty, programme cores |
+| `Courses-Syllabus_S26-V1.pdf` | Spring 2026 syllabus, a stand-in for Spring 2027 course details |
 
 Generated / curated files:
 

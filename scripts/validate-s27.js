@@ -10,7 +10,11 @@ const path = require("path");
 const ROOT = path.dirname(__dirname);
 global.window = {};
 eval(fs.readFileSync(path.join(ROOT, "js", "data-s27.js"), "utf8"));
+eval(fs.readFileSync(path.join(ROOT, "js", "syllabi-s26.js"), "utf8"));
+eval(fs.readFileSync(path.join(ROOT, "js", "common.js"), "utf8"));
 const DATA = global.window.COURSE_DATA;
+const SYL26 = global.window.SYLLABI;
+const APP = global.window.APP;
 const RAW = fs.readFileSync(path.join(ROOT, "data", "raw", "offerings-s27.txt"), "utf8");
 
 const errors = [], warnings = [];
@@ -84,6 +88,25 @@ for (const [pid, p] of Object.entries(DATA.programmes)) {
     else err(msg);
   }
 }
+
+/* ---- Spring 2026 syllabus stand-ins (matched by code, as dashboard.js does) ---- */
+const sylFor = (code) => SYL26[code] || SYL26[code.replace(/[ab]$/, "")] || null;
+const shown = codes.filter((c) => !DATA.courses[c].nonCourse);
+const withSyl = shown.filter((c) => sylFor(c));
+const changed = [];
+const wordsOf = (t) => new Set(String(t || "").toLowerCase().match(/[a-z]{4,}/g) || []);
+for (const code of withSyl) {
+  const c = DATA.courses[code], syl = sylFor(code);
+  // Same code should mean the same course: the titles must share a word.
+  const a = wordsOf(c.name), b = wordsOf(syl.title);
+  if (![...a].some((w) => b.has(w))) err(`${code}: S26 syllabus title "${syl.title}" doesn't look like "${c.name}"`);
+  if (!syl.outcomes && !syl.topics && !syl.raw) warn(`${code}: S26 syllabus record is empty`);
+  const fc = APP.facultyChange(c.faculty, syl.faculty);
+  if (fc) changed.push(`${code}: ${fc.before}  ->  ${c.faculty.join(" + ")}`);
+}
+console.log(`S26 syllabus used for ${withSyl.length} of ${shown.length} courses; ` +
+  `${shown.length - withSyl.length} show "${DATA.meta.syllabusMissing}"`);
+console.log(`faculty changed since Spring 2026 (${changed.length}):\n  ` + changed.join("\n  "));
 
 const visible = codes.filter((c) => !DATA.courses[c].nonCourse).length;
 console.log(`courses: ${codes.length} (${visible} shown on the dashboard), programmes: ${Object.keys(DATA.programmes).length}`);
