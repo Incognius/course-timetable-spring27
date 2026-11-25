@@ -3,18 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Timetable — Monsoon 2026</title>
+<title>Timetable — Spring 2027</title>
 <script>(function(){var t=localStorage.getItem("m26-theme");if(t)document.documentElement.setAttribute("data-theme",t);})();</script>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="tt-page">
 
 <header class="site">
-  <h1>IIIT-H Monsoon 2026</h1>
-  <nav class="sem-switch" aria-label="Semester">
-    <a href="timetable.html" class="active" aria-current="page">Monsoon 2026</a>
-    <a href="spring27/timetable.html">Spring 2027</a>
-  </nav>
+  <h1>IIIT-H Spring 2027</h1>
   <span class="meta" id="meta-line"></span>
   <nav class="tabs">
     <a href="index.html">Courses</a>
@@ -23,59 +19,27 @@
   <button class="theme-btn" id="theme-toggle" type="button">Dark mode</button>
 </header>
 
-<div class="tt-layout">
+<!-- The Spring 2027 lecture timetable has not been published. Once it is,
+     add the slots to js/data-s27.js and replace this page with the builder:
+     restore the Monsoon builder page (git show 76e2a81:timetable.html) and
+     point it at js/data-s27.js instead of js/data.js + js/syllabi.js. -->
+<main class="tt-pending">
+  <div class="card">
+    <h2>Will Be Updated Once document is available</h2>
+    <p>The Spring 2027 lecture timetable hasn't been published yet. The course list is already up.</p>
+    <a class="btn primary" href="index.html">Browse Spring 2027 courses</a>
+  </div>
+</main>
 
-  <aside class="tt-picker">
-    <div class="controls">
-      <select id="prog-select"><option value="">Select your programme…</option></select>
-      <input type="search" id="pick-search" placeholder="Search courses" autocomplete="off">
-      <select id="pick-filter">
-        <option value="">All courses</option>
-        <option value="noncourse">Honours / Thesis / Seminars</option>
-      </select>
-    </div>
-    <div class="list" id="pick-list"></div>
-  </aside>
-
-  <main class="tt-main">
-    <div class="clash-banner" id="clash-banner"></div>
-    <div class="toolbar">
-      <span id="grid-title" style="font-weight:600"></span>
-      <span class="spacer"></span>
-      <button class="btn" id="btn-reset">Reset selection</button>
-      <button class="btn primary" id="btn-ics">Export .ics</button>
-    </div>
-    <div class="grid-wrap"><table class="timetable" id="tt-table"></table></div>
-    <p class="grid-note">
-      Mon/Thu = slot A · Tue/Fri = slot B · Wed/Sat = slot C · Lunch 13:05–14:00 ·
-      H1/H2 half-semester courses sharing a slot do not clash.
-    </p>
-    <div class="detail-card" id="detail-card">
-      <div class="placeholder">Select a course to see its details here.</div>
-    </div>
-  </main>
-
-  <aside class="tt-side">
-    <div class="prog-label" id="side-prog">No programme selected</div>
-    <div class="credit-line" id="side-credits"></div>
-    <h2>Selected courses</h2>
-    <p class="drop-note">Click a course in the list, or drag it onto the timetable, to add it.</p>
-    <div id="sel-list"></div>
-    <h2 style="margin-top:1.2rem">Elective requirements</h2>
-    <p class="drop-note">
-      Elective counts (HSS / Science / Maths / Bouquet / ECE Star &amp; Stream) are
-      graduation-level requirements, not per-semester ones, so nothing is enforced
-      here. The Star / Stream rules in particular are involved — please read the
-      official documents to fully understand them before registering.
-    </p>
-  </aside>
-
-</div>
-
-<script src="js/data.js"></script>
-<script src="js/syllabi.js"></script>
+<script src="js/data-s27.js"></script>
 <script src="js/common.js"></script>
-<script src="js/ics.js"></script>
-<script src="js/timetable.js"></script>
+<script>
+  (function () {
+    var D = window.APP.D;
+    document.getElementById("meta-line").textContent =
+      D.meta.semester + " · Offerings " + D.meta.offeringsVersion;
+    window.APP.initThemeToggle(document.getElementById("theme-toggle"));
+  })();
+</script>
 </body>
 </html>

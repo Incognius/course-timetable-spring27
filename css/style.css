@@ -118,25 +118,6 @@ nav.tabs a.active {
   color: #fff;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.25);
 }
-/* semester switch: quieter than the page tabs */
-nav.sem-switch {
-  display: flex;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-nav.sem-switch a {
-  text-decoration: none;
-  padding: 0.25rem 0.7rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-dim);
-  background: var(--surface);
-}
-nav.sem-switch a + a { border-left: 1px solid var(--border); }
-nav.sem-switch a:hover { color: var(--text); }
-nav.sem-switch a.active { background: var(--accent-soft); color: var(--accent); }
-
 .theme-btn {
   border: 1px solid var(--border);
   background: var(--surface);

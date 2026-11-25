@@ -1,32 +1,18 @@
-# IIIT-H Monsoon 2026 — Course Dashboard & Timetable Builder
+# IIIT-H Spring 2027 — Course Dashboard
 
-A static site for exploring the courses offered in **Monsoon 2026 (2026-27
-Semester I)** and building a clash-free personal timetable.
+A static site for exploring the courses offered in **Spring 2027 (2026-27
+Semester II)**.
 
-- **Courses** — every offered course as a filterable tile (code, credits,
-  faculty, category, seat cap). Click a course for the full details and its
-  verbatim syllabus (prerequisites, outcomes, detailed topics, references,
-  assessment).
-- **Timetable** — pick your programme, get your fixed cores placed
-  automatically, then add electives by clicking or dragging them onto the
-  weekly grid. Slot clashes are highlighted, a running credit total flags
-  overloading, and you can export the whole thing to `.ics`.
+- **Courses** (`index.html`) — every course from `CourseOfferings-S27-V1.pdf`
+  (24 Nov 2026) as a filterable tile (code, credits, faculty, category, seat
+  cap), with Spring-only lists (UG2 breadth buckets, UG2 ECE 2-credit
+  foundation streams, Ethics 2 electives, Bouquet CPS). Four courses listed as
+  "New" have no code yet and show as `NEW-1`…`NEW-4`.
+- **Timetable** (`timetable.html`) — placeholder: *"Will Be Updated Once
+  document is available"*. The Spring lecture timetable and syllabus haven't
+  been published, so no course has a slot or syllabus yet.
 
 Everything is client-side vanilla JS — no build step, no backend.
-
-## Spring 2027
-
-A Spring 2027 (2026-27 Semester II) version lives in `spring27/`. Use the
-**Monsoon 2026 / Spring 2027** switch in the header to move between them.
-
-- **Courses** (`spring27/index.html`) — every course from
-  `CourseOfferings-S27-V1.pdf` (24 Nov 2026), with the same filters and
-  details view, plus Spring-only lists (UG2 breadth buckets, UG2 ECE 2-credit
-  foundation streams, Ethics 2 electives, Bouquet CPS). Four courses listed
-  as "New" have no code yet and show as `NEW-1`…`NEW-4`.
-- **Timetable** (`spring27/timetable.html`) — placeholder: *"Will Be Updated
-  Once document is available"*. The Spring lecture timetable and syllabus
-  haven't been published, so no course has a slot or syllabus yet.
 
 Data: `js/data-s27.js`, checked by `node scripts/validate-s27.js`. That check
 confirms every course code in the PDF is in the data and that each
@@ -35,10 +21,18 @@ doc mismatch, UG4 CHD (adds to 16 but printed as 18), is a warning, not an
 error.
 
 When the Spring timetable arrives: add `meet:` / `sec:` slots in
-`js/data-s27.js` (same format as `js/data.js`), then replace
-`spring27/timetable.html` with a copy of `timetable.html` that loads
-`../js/data-s27.js`. `js/timetable.js` and `js/ics.js` also hard-code Monsoon
+`js/data-s27.js` (same format as `js/data.js`), then bring back the timetable
+builder page from Monsoon (`git show 76e2a81:timetable.html`) and point it at
+`js/data-s27.js`. `js/timetable.js` and `js/ics.js` also hard-code Monsoon
 assumptions (the ICS date range and the syllabus file), so check those too.
+
+## Monsoon 2026 (archived)
+
+The Monsoon 2026 site (course dashboard + timetable builder with `.ics`
+export) is no longer served. Its data and code are kept for reuse —
+`js/data.js`, `js/syllabi.js`, `js/timetable.js`, `js/ics.js`, the M26 PDFs
+and `scripts/validate.js` — and the last Monsoon version of the pages is
+commit `76e2a81`. The sections below describe that Monsoon pipeline.
 
 ## Running locally
 
